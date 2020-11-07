@@ -10,12 +10,19 @@ const filesController = require('../controllers/filesController');
 
 // Definir Rutas
 router.post('/',
+    // auth,
     filesController.loadFile
-)
+);
+
+router.post('/payments',
+    // auth,
+    filesController.loadFilePayment
+);
 
 router.delete('/:id',
+    // auth,
     filesController.deleteFile
-)
+);
 
 
 module.exports = router;

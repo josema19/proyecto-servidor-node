@@ -6,43 +6,6 @@ const { validationResult } = require('express-validator');
 // Importar Modelos
 const Product = require('../models/Product');
 
-// Configurar parámetros del archivo
-const configuracionMulter = {
-    limits: { fileSize: 1024 * 1024 },
-    storage: fileStorage = multer.diskStorage({
-        destination: (req, file, cb) => {
-            cb(null, __dirname + '/../uploads/products');
-        },
-        filename: (_, file, cb) => {
-            const extension = file.originalname.substring(file.originalname.lastIndexOf('.'), file.originalname.length);
-            cb(null, `${shortid.generate()}${extension}`);
-        },
-        fileFilter: (req, file, cb) => {
-            if ((file.mimetype === 'image/jpeg') || (file.mimetype === 'image/png')) {
-                cb(null, true);
-            } else {
-                cb(new Error('Formato no válido'), false);
-            };
-        }
-    })
-};
-
-// Definir multer
-const upload = multer(configuracionMulter).single('file');
-
-// Carga un archivo en el servidor
-exports.loadFile = (req, res, next) => {
-    // Subir el archivo y mostrar los errores si es el caso
-    upload(req, res, async (error) => {
-        if (!error) {
-            res.status(200).json({ archivo: req.file.filename });
-        } else {
-            console.log(error);
-            return next();
-        };
-    });
-}
-
 // Devuelve la información de todos los productos
 exports.getProducts = async (_, res) => {
     // Obtener información de todos los productos en la BD

@@ -8,16 +8,20 @@ const auth = require('../middleware/auth');
 const usersController = require('../controllers/usersController');
 
 // Definir Rutas
+
+// Obtener un usuario
 router.get('/',
     auth,
     usersController.getUsers
 );
 
+// Obtener todos los usuarios
 router.get('/:id',
     auth,
     usersController.getUser
-)
+);
 
+// Registrar nuevo usuario
 router.post('/',
     [
         check('cardType', 'El tipo de cédula es obligatorio').notEmpty(),
@@ -33,6 +37,16 @@ router.post('/',
     usersController.createUser
 );
 
+// Cambiar contraseña
+router.post('/forgotten-password',
+    [
+        check('email', 'El email no es válido').isEmail(),
+        check('password', 'El password es obligatorio').notEmpty().isLength({ min: 6 }).withMessage('El password requiere mínimo 6 caracteres'),
+    ],
+    usersController.forgottenPassword,
+);
+
+// Actualizar información del usuario
 router.put('/:id',
     auth,
     [
@@ -43,10 +57,10 @@ router.put('/:id',
         check('email', 'El correo no es válido').isEmail().normalizeEmail(),
         check('role', 'El campo role es obligatorio').notEmpty().escape(),
     ],
-    usersController.loadFile,
     usersController.updateUser
 );
 
+// Eliminar usuario
 router.delete('/:id',
     auth,
     usersController.deleteUser

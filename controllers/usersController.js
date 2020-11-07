@@ -1,59 +1,22 @@
 // Importar Librerías
 const multer = require('multer');
 const shortid = require('shortid');
+const bcrypt = require('bcrypt');
 const { validationResult } = require('express-validator');
 
 // Importar Modelos
 const User = require('../models/User');
 
-// Configurar parámetros del archivo
-const configuracionMulter = {
-    limits: { fileSize: 1024 * 1024 },
-    storage: fileStorage = multer.diskStorage({
-        destination: (req, file, cb) => {
-            cb(null, __dirname + '/../uploads/profiles');
-        },
-        filename: (_, file, cb) => {
-            const extension = file.originalname.substring(file.originalname.lastIndexOf('.'), file.originalname.length);
-            cb(null, `${shortid.generate()}${extension}`);
-        },
-        fileFilter: (req, file, cb) => {
-            if ((file.mimetype === 'image/jpeg') || (file.mimetype === 'image/png')) {
-                cb(null, true);
-            } else {
-                cb(new Error('Formato no válido'), false);
-            };
-        }
-    })
-};
-
-// Definir multer
-const upload = multer(configuracionMulter).single('file');
-
-// Carga un archivo en el servidor
-exports.loadFile = (req, res, next) => {
-    // Subir el archivo y mostrar los errores si es el caso
-    upload(req, res, async (error) => {
-        if (!error) {
-            res.status(200).json({ archivo: req.file.filename });
-        } else {
-            console.log(error);
-            return next();
-        };
-    });
-}
-
 // Devuelve la información de todos los usuarios
-exports.getUsers = async (_, res, next) => {
+exports.getUsers = async (_, res) => {
     // Obtener información de todos los usuarios en la BD
     try {
         const users = await User.findAll();
-        res.status(200).json({ users });
+        return res.status(200).json({ users });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ msg: 'Hubo un error al intentar obtener la información de la Base de Datos' });
-    }
-    return next();
+        return res.status(500).json({ msg: 'Hubo un error al intentar obtener la información de la Base de Datos' });
+    };
 };
 
 // Devuelve la información de un usuario según el id dado
@@ -150,4 +113,38 @@ exports.deleteUser = async (req, res) => {
         console.log(error);
         return res.status(500).json({ msg: 'Hubo un error al intentar eliminar la información del usuario' });
     };
+};
+
+// Actualiza el password de un usuario en la BD
+exports.forgottenPassword = async (req, res) => {
+    // Revisar errores con express validator
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    };
+
+    // Verificar si el usuario no está registrado
+    const { email, password } = req.body;
+    const user = await User.findOne({ where: { email } })
+    if (!user) {
+        return res.status(401).json({ msg: 'El usuario no existe' });
+    };
+
+    // Codificar password
+    const newPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
+
+    // Actualizar password
+    try {
+        await User.update(
+            { password: newPassword }, {
+            where: {
+                email
+            }
+        });
+        return res.status(200).json({ msg: 'El password se actualizó correctamente' });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ msg: 'Hubo un error al intentar actualizar el password en la BD' });
+    }
 };

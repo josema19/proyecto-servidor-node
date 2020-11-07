@@ -25,7 +25,6 @@ router.post('/',
         check('quantityAvailable', 'La cantidad es obligatoria').notEmpty().escape(),
         check('description', 'La descripción es obligatoria').notEmpty().escape(),
     ],
-    productsController.loadFile,
     productsController.createProduct
 );
 
