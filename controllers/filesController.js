@@ -93,11 +93,10 @@ exports.loadFilePayment = (req, res, next) => {
 };
 
 // Elimina un archivo del servidor
-exports.deleteFile = (req, res, next) => {
+exports.deleteFile = (req, _, next) => {
     // Eliminar archivo del sistema
     try {
         fs.unlinkSync(__dirname + `/../uploads/${req.file}`);
-        console.log('Archivo Eliminado');
         return next();
     } catch (error) {
         console.log(error);

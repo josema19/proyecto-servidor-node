@@ -23,7 +23,7 @@ exports.getRecipe = async (req, res) => {
 
     // Buscar en la BD y devolver respuesta
     try {
-        const recipe = await Recipe.findByPk(id);;
+        const recipe = await Recipe.findByPk(id);
         return res.status(200).json({ recipe });
     } catch (error) {
         console.log(error);
@@ -53,7 +53,7 @@ exports.createRecipe = async (req, res) => {
 };
 
 // Actualiza la información de una receta en la BD
-exports.updateRecipe = async (req, res) => {
+exports.updateRecipe = async (req, res, next) => {
     // Validar si existen errores y mandarlos al frontend
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -63,21 +63,30 @@ exports.updateRecipe = async (req, res) => {
     // Obtener id de los parámetros
     const { id } = req.params
 
-    // Validar que el usuario se encuentre registrado en la BD
-    if (!(await Recipe.findByPk(id))) {
+    // Validar que la receta se encuentre registrada en la BD
+    const oldRecipe = await Recipe.findByPk(id);
+    if (!oldRecipe) {
         return res.status(400).json({ msg: 'La receta no se encuentra registrada' });
     };
 
     // Actualizar información en la BD
     try {
-        const updatedFields = req.body;
+        const updatedFields = { ...req.body };
+        if (updatedFields.image === '') {
+            delete updatedFields.image;
+        };
+
         await Recipe.update(
             updatedFields, {
             where: {
                 id
             }
         });
-        return res.status(200).json({ msg: 'La información de la receta se actualizó correctamente' });
+        res.status(200).json({ msg: 'La información de la receta se actualizó correctamente' });
+        if (updatedFields.image && oldRecipe.image !== '') {
+            req.file = oldRecipe.image;
+            next();
+        };
     } catch (error) {
         console.log(error);
         return res.status(500).json({ msg: 'Hubo un error al intentar actualizar la información de la receta' });
@@ -85,17 +94,30 @@ exports.updateRecipe = async (req, res) => {
 };
 
 // Elimina la información de una receta
-exports.deleteRecipe = async (req, res) => {
+exports.deleteRecipe = async (req, res, next) => {
+    // Obtener información del identificador
+    const { id } = req.params
+
+    // Obtener información del producto
+    const recipe = await Recipe.findByPk(id);
+    if (!recipe) {
+        return res.status(400).json({ msg: 'La receta no se encuentra registrada' });
+    };
+
+    // Intentar eliminar
     try {
-        const { id } = req.params
         await Recipe.destroy({
             where: {
                 id
             }
         });
-        return res.status(200).json({ msg: 'La receta se eliminó correctamente' });
+        res.status(200).json({ msg: 'La receta se eliminó correctamente' });
+        if (recipe.image !== '') {
+            req.file = recipe.image;
+            next();
+        };
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ msg: 'Hubo un error al intentar eliminar la información de la receta' });
+        return res.status(500).json({ msg: 'Hubo un error al intentar eliminar la información de al receta' });
     };
 };

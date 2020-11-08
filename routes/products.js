@@ -6,6 +6,7 @@ const auth = require('../middleware/auth');
 
 // Importar Controlador
 const productsController = require('../controllers/productsController');
+const filesController = require('../controllers/filesController');
 
 // Definir Rutas
 router.get('/',
@@ -37,12 +38,14 @@ router.put('/:code',
         check('description', 'La descripción es obligatoria').notEmpty().escape(),
     ],
     auth,
-    productsController.updateProduct
+    productsController.updateProduct,
+    filesController.deleteFile,
 );
 
 router.delete('/:code',
     auth,
-    productsController.deleteProduct
+    productsController.deleteProduct,
+    filesController.deleteFile,
 );
 
 // Exportar Rutas

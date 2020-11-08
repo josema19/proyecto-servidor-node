@@ -66,31 +66,40 @@ exports.createProduct = async (req, res) => {
 };
 
 // Actualiza la información de un producto en la BD
-exports.updateProduct = async (req, res) => {
+exports.updateProduct = async (req, res, next) => {
     // Validar si existen errores y mandarlos al frontend
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     };
 
-    // Obtener id de los parámetros
+    // Obtener code de los parámetros
     const { code } = req.params
 
     // Validar que el producto se encuentra registrado en la BD
-    if (!(await Product.findOne({ where: { code } }))) {
+    const oldProduct = await Product.findOne({ where: { code } });
+    if (!oldProduct) {
         return res.status(400).json({ msg: 'El producto no se encuentra registrado' });
     };
 
     // Actualizar información en la BD
     try {
-        const updatedFields = req.body;
+        const updatedFields = { ...req.body };
+        if (updatedFields.image === '') {
+            delete updatedFields.image;
+        };
+
         await Product.update(
             updatedFields, {
             where: {
                 code
             }
         });
-        return res.status(200).json({ msg: 'La información del producto se actualizó correctamente' });
+        res.status(200).json({ msg: 'La información del producto se actualizó correctamente' });
+        if (updatedFields.image && oldProduct.image !== '') {
+            req.file = oldProduct.image;
+            next();
+        };
     } catch (error) {
         console.log(error);
         return res.status(500).json({ msg: 'Hubo un error al intentar actualizar la información del producto' });
@@ -98,15 +107,28 @@ exports.updateProduct = async (req, res) => {
 };
 
 // Elimina la información de un producto
-exports.deleteProduct = async (req, res) => {
+exports.deleteProduct = async (req, res, next) => {
+    // Obtener información del identificador
+    const { code } = req.params
+
+    // Obtener información del producto
+    const product = await Product.findOne({ where: { code } });
+    if (!product) {
+        return res.status(400).json({ msg: 'El producto no se encuentra registrado' });
+    };
+
+    // Intentar eliminar
     try {
-        const { code } = req.params
         await Product.destroy({
             where: {
                 code
             }
         });
-        return res.status(200).json({ msg: 'El producto se eliminó correctamente' });
+        res.status(200).json({ msg: 'El producto se eliminó correctamente' });
+        if (product.image !== '') {
+            req.file = product.image;
+            next();
+        };
     } catch (error) {
         console.log(error);
         return res.status(500).json({ msg: 'Hubo un error al intentar eliminar la información del producto' });

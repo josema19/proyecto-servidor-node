@@ -6,6 +6,7 @@ const auth = require('../middleware/auth');
 
 // Importar Controlador
 const recipesController = require('../controllers/recipesController');
+const filesController = require('../controllers/filesController');
 
 // Definir Rutas
 router.get('/',
@@ -33,12 +34,14 @@ router.put('/:id',
         check('preparation', 'La preparación es obligatoria').notEmpty(),
     ],
     auth,
-    recipesController.updateRecipe
+    recipesController.updateRecipe,
+    filesController.deleteFile,
 );
 
 router.delete('/:id',
     auth,
-    recipesController.deleteRecipe
+    recipesController.deleteRecipe,
+    filesController.deleteFile,
 );
 
 // Exportar Rutas
