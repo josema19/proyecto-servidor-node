@@ -32,11 +32,13 @@ exports.authenticateUser = async (req, res, next) => {
     const token = jwt.sign(
         {
             id: user.id,
+            address: user.address,
+            email: user.email,
             firstName: user.firstName,
+            image: user.image,
             lastName: user.lastName,
             card: user.cardType + '-' + user.cardId,
             phone: user.phoneType + '-' + user.phoneNumber,
-            address: user.address,
             role: user.role,
         },
         process.env.SECRETA,

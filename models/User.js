@@ -32,9 +32,13 @@ const User = db.define('User', {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    image: {
+        type: DataTypes.STRING,
+        defaultValue: '',
+    },
     lastName: {
         type: DataTypes.STRING,
-        defaultValue: "",
+        allowNull: true,
     },
     password: {
         type: DataTypes.STRING,
