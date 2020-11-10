@@ -4,8 +4,9 @@ const router = express.Router();
 const { check } = require('express-validator');
 const auth = require('../middleware/auth');
 
-// Importar Controlador
+// Importar Controladores
 const usersController = require('../controllers/usersController');
+const filesController = require('../controllers/filesController');
 
 // Definir Rutas
 
@@ -50,14 +51,14 @@ router.post('/forgotten-password',
 router.put('/:id',
     auth,
     [
+        check('address', 'La dirección es obligatoria').notEmpty(),
         check('firstName', 'El nombre es obligatorio').notEmpty().escape(),
-        check('lastName').escape(),
-        check('typeCard', 'El tipo de cédula es obligatorio').notEmpty(),
-        check('idCard', 'El número de cédula es obligatorio').notEmpty().isLength({ min: 7, max: 10 }).withMessage('La cédula debe tener al menos 7 números'),
-        check('email', 'El correo no es válido').isEmail().normalizeEmail(),
-        check('role', 'El campo role es obligatorio').notEmpty().escape(),
+        check('lastName', 'El apellido es obligatorio').notEmpty().escape(),
+        check('phoneType', 'La extensión del teléfono es obligatoria').notEmpty(),
+        check('phoneNumber', 'El número de teléfono es obligatorio').notEmpty(),
     ],
-    usersController.updateUser
+    usersController.updateUser,
+    filesController.deleteFile,
 );
 
 // Eliminar usuario

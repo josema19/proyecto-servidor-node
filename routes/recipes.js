@@ -4,7 +4,7 @@ const router = express.Router();
 const { check } = require('express-validator');
 const auth = require('../middleware/auth');
 
-// Importar Controlador
+// Importar Controladores
 const recipesController = require('../controllers/recipesController');
 const filesController = require('../controllers/filesController');
 
