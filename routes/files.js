@@ -14,11 +14,6 @@ router.post('/',
     filesController.loadFile
 );
 
-router.post('/payments',
-    // auth,
-    filesController.loadFilePayment
-);
-
 router.delete('/:id',
     // auth,
     filesController.deleteFile
