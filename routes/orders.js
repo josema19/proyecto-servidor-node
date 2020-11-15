@@ -3,6 +3,9 @@ const express = require('express');
 const router = express.Router();
 const { check } = require('express-validator');
 
+// Importar Middleware de Autenticación
+const auth = require('../middleware/auth');
+
 // Importar Controlador
 const ordersController = require('../controllers/ordersController');
 
