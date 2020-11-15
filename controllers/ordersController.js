@@ -4,12 +4,13 @@ const { validationResult } = require('express-validator');
 // Importar Modelos
 const Order = require('../models/Order');
 const OPU = require('../models/OPU');
+const User = require('../models/User');
 
 // Devuelve la información de todos pedidos
 exports.getOrders = async (_, res) => {
     // Obtener información de todos los pedidos en la BD
     try {
-        const orders = await Order.findAll();
+        const orders = await Order.findAll({ include: User });
         return res.status(200).json({ orders });
     } catch (error) {
         console.log(error);
@@ -27,6 +28,9 @@ exports.getUserOrders = async (req, res) => {
         const orders = await Order.findAll({
             where: {
                 UserId: id
+            },
+            include: {
+                model: OPU, as: 'products'
             }
         });
         return res.status(200).json({ orders });
@@ -43,7 +47,7 @@ exports.getOrder = async (req, res) => {
 
     // Buscar en la BD y devolver respuesta
     try {
-        const order = await Order.findByPk(id);
+        const order = await Order.findByPk(id, { include: { model: OPU, as: 'products' } });
         return res.status(200).json({ order });
     } catch (error) {
         console.log(error);

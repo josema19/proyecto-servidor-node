@@ -6,6 +6,7 @@ const db = require('../config/db');
 
 // Importar modelo de Usuarios
 const User = require('../models/User');
+const OPU = require('../models/OPU');
 
 // Definir Modelo Order
 const Order = db.define('Order', {
@@ -45,6 +46,7 @@ const Order = db.define('Order', {
 
 // Definir Asociaciones
 Order.belongsTo(User);
+Order.hasMany(OPU, { as: 'products' });
 
 // Exportar Modelo
 module.exports = Order;

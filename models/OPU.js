@@ -36,9 +36,6 @@ const OPU = db.define('OPU', {
     },
 });
 
-// Definir Asociaciones
-OPU.belongsTo(Order);
-
 // Exportar Modelo
 module.exports = OPU;
 
