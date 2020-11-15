@@ -1,6 +1,4 @@
 // Importar Librerías
-const multer = require('multer');
-const shortid = require('shortid');
 const bcrypt = require('bcrypt');
 const { validationResult } = require('express-validator');
 
@@ -35,7 +33,7 @@ exports.getUser = async (req, res) => {
 };
 
 // Crea un nuevo usuario en la BD
-exports.createUser = async (req, res, next) => {
+exports.createUser = async (req, res) => {
     // Validar si existen errores y mandarlos al frontend
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

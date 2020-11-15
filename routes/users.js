@@ -9,20 +9,16 @@ const usersController = require('../controllers/usersController');
 const filesController = require('../controllers/filesController');
 
 // Definir Rutas
-
-// Obtener un usuario
 router.get('/',
     auth,
     usersController.getUsers
 );
 
-// Obtener todos los usuarios
 router.get('/:id',
     auth,
     usersController.getUser
 );
 
-// Registrar nuevo usuario
 router.post('/',
     [
         check('cardType', 'El tipo de cédula es obligatorio').notEmpty(),
@@ -38,7 +34,6 @@ router.post('/',
     usersController.createUser
 );
 
-// Cambiar contraseña
 router.post('/forgotten-password',
     [
         check('email', 'El email no es válido').isEmail(),
@@ -47,7 +42,6 @@ router.post('/forgotten-password',
     usersController.forgottenPassword,
 );
 
-// Actualizar información del usuario
 router.put('/:id',
     auth,
     [
@@ -61,7 +55,6 @@ router.put('/:id',
     filesController.deleteFile,
 );
 
-// Eliminar usuario
 router.delete('/:id',
     auth,
     usersController.deleteUser

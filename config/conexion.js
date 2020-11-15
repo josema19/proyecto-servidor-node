@@ -5,6 +5,8 @@ const db = require('./db');
 require('../models/User');
 require('../models/Product');
 require('../models/Recipe');
+require('../models/Order');
+require('../models/OPU');
 
 // Crear Conexión
 const conexionDB = async () => {

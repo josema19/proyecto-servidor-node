@@ -26,7 +26,7 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/files', require('./routes/files'));
 app.use('/api/products', require('./routes/products'));
 app.use('/api/recipes', require('./routes/recipes'));
-
+app.use('/api/orders', require('./routes/orders'));
 
 // Arracar Servidor
 app.listen(port, process.env.HOST, () => {

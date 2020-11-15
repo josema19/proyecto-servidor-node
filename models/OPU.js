@@ -4,26 +4,27 @@ const { DataTypes } = require('sequelize');
 // Importar Configuración de Sequelize
 const db = require('../config/db');
 
-// Importar modelo de Usuarios
-const User = require('../models/User');
+// Importar modelo de Ordenes
+const Order = require('../models/Order');
 
 // Definir Modelo Order
-const Order = db.define('Order', {
+const OPU = db.define('OPU', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    coinType: {
+    name: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    paymentType: {
+    image: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
-    totalProducts: {
+    quantity: {
         type: DataTypes.INTEGER,
+        allowNull: false,
     },
     totalBolivares: {
         type: DataTypes.FLOAT,
@@ -33,18 +34,11 @@ const Order = db.define('Order', {
         type: DataTypes.FLOAT,
         allowNull: false,
     },
-    state: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    voucher: {
-        type: DataTypes.STRING,
-        allowNull: true,
-    }
 });
 
 // Definir Asociaciones
-Order.belongsTo(User);
+OPU.belongsTo(Order);
 
 // Exportar Modelo
-module.exports = Order;
+module.exports = OPU;
+
