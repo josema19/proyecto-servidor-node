@@ -38,6 +38,10 @@ const Order = db.define('Order', {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    service: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
     voucher: {
         type: DataTypes.STRING,
         allowNull: true,
