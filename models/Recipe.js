@@ -16,7 +16,7 @@ const Recipe = db.define('Recipe', {
         allowNull: true,
     },
     ingredients: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(3000),
         allowNull: false,
     },
     name: {
