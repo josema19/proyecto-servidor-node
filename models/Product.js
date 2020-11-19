@@ -28,7 +28,7 @@ const Product = db.define('Product', {
         allowNull: false,
     },
     price: {
-        type: DataTypes.FLOAT,
+        type: DataTypes.FLOAT(50, 2),
         allowNull: false,
     },
     quantityAvailable: {

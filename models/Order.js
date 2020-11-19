@@ -27,11 +27,11 @@ const Order = db.define('Order', {
         type: DataTypes.INTEGER,
     },
     totalBolivares: {
-        type: DataTypes.FLOAT,
+        type: DataTypes.FLOAT(50, 2),
         allowNull: false,
     },
     totalDolares: {
-        type: DataTypes.FLOAT,
+        type: DataTypes.FLOAT(50, 2),
         allowNull: false,
     },
     state: {
